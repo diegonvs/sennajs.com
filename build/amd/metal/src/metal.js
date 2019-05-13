@@ -4,7 +4,16 @@ define(['exports', './core', './array/array', './async/async', './disposable/Dis
   Object.defineProperty(exports, "__esModule", {
     value: true
   });
-  exports.string = exports.object = exports.Disposable = exports.async = exports.array = exports.core = undefined;
+  exports.string = exports.object = exports.Disposable = exports.async = exports.array = undefined;
+  Object.keys(_core).forEach(function (key) {
+    if (key === "default" || key === "__esModule") return;
+    Object.defineProperty(exports, key, {
+      enumerable: true,
+      get: function () {
+        return _core[key];
+      }
+    });
+  });
 
   var _core2 = _interopRequireDefault(_core);
 
@@ -24,12 +33,11 @@ define(['exports', './core', './array/array', './async/async', './disposable/Dis
     };
   }
 
-  exports.default = _core2.default;
-  exports.core = _core2.default;
   exports.array = _array2.default;
   exports.async = _async2.default;
   exports.Disposable = _Disposable2.default;
   exports.object = _object2.default;
   exports.string = _string2.default;
+  exports.default = _core2.default;
 });
 //# sourceMappingURL=metal.js.map

@@ -41,6 +41,13 @@ define(['exports'], function (exports) {
    */
   errors.REQUEST_TIMEOUT = 'Request timeout';
 
+  /**
+   * Request is blocked by CORS issue message.
+   * @type {string}
+   * @static
+   */
+  errors.REQUEST_PREMATURE_TERMINATION = 'Request terminated prematurely';
+
   exports.default = errors;
 });
 //# sourceMappingURL=errors.js.map

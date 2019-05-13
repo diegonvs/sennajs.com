@@ -1,11 +1,11 @@
-define(['exports', 'metal/src/metal', './metalData', 'metal-events/src/events'], function (exports, _metal, _metalData, _events) {
+define(['exports', 'metal/src/metal', './domData', 'metal-events/src/events'], function (exports, _metal, _domData, _events) {
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 
-	var _metalData2 = _interopRequireDefault(_metalData);
+	var _domData2 = _interopRequireDefault(_domData);
 
 	function _interopRequireDefault(obj) {
 		return obj && obj.__esModule ? obj : {
@@ -18,6 +18,24 @@ define(['exports', 'metal/src/metal', './metalData', 'metal-events/src/events'],
 			throw new TypeError("Cannot call a class as a function");
 		}
 	}
+
+	var _createClass = function () {
+		function defineProperties(target, props) {
+			for (var i = 0; i < props.length; i++) {
+				var descriptor = props[i];
+				descriptor.enumerable = descriptor.enumerable || false;
+				descriptor.configurable = true;
+				if ("value" in descriptor) descriptor.writable = true;
+				Object.defineProperty(target, descriptor.key, descriptor);
+			}
+		}
+
+		return function (Constructor, protoProps, staticProps) {
+			if (protoProps) defineProperties(Constructor.prototype, protoProps);
+			if (staticProps) defineProperties(Constructor, staticProps);
+			return Constructor;
+		};
+	}();
 
 	function _possibleConstructorReturn(self, call) {
 		if (!self) {
@@ -51,17 +69,16 @@ define(['exports', 'metal/src/metal', './metalData', 'metal-events/src/events'],
    * @param {!Event} emitter Element the event was subscribed to.
    * @param {string} event The name of the event that was subscribed to.
    * @param {!Function} listener The listener subscribed to the event.
-   * @param {string=} opt_selector An optional selector used when delegating
+   * @param {string=} selector An optional selector used when delegating
    *     the event.
    * @constructor
    */
-
-		function DomDelegatedEventHandle(emitter, event, listener, opt_selector) {
+		function DomDelegatedEventHandle(emitter, event, listener, selector) {
 			_classCallCheck(this, DomDelegatedEventHandle);
 
-			var _this = _possibleConstructorReturn(this, _EventHandle.call(this, emitter, event, listener));
+			var _this = _possibleConstructorReturn(this, (DomDelegatedEventHandle.__proto__ || Object.getPrototypeOf(DomDelegatedEventHandle)).call(this, emitter, event, listener));
 
-			_this.selector_ = opt_selector;
+			_this.selector_ = selector;
 			return _this;
 		}
 
@@ -70,17 +87,21 @@ define(['exports', 'metal/src/metal', './metalData', 'metal-events/src/events'],
    */
 
 
-		DomDelegatedEventHandle.prototype.removeListener = function removeListener() {
-			var data = _metalData2.default.get(this.emitter_);
-			var selector = this.selector_;
-			var arr = _metal.core.isString(selector) ? data.delegating[this.event_].selectors : data.listeners;
-			var key = _metal.core.isString(selector) ? selector : this.event_;
+		_createClass(DomDelegatedEventHandle, [{
+			key: 'removeListener',
+			value: function removeListener() {
+				var delegating = _domData2.default.get(this.emitter_, 'delegating', {});
+				var listeners = _domData2.default.get(this.emitter_, 'listeners', {});
+				var selector = this.selector_;
+				var arr = (0, _metal.isString)(selector) ? delegating[this.event_].selectors : listeners;
+				var key = (0, _metal.isString)(selector) ? selector : this.event_;
 
-			_metal.array.remove(arr[key] || [], this.listener_);
-			if (arr[key] && arr[key].length === 0) {
-				delete arr[key];
+				_metal.array.remove(arr[key] || [], this.listener_);
+				if (arr[key] && arr[key].length === 0) {
+					delete arr[key];
+				}
 			}
-		};
+		}]);
 
 		return DomDelegatedEventHandle;
 	}(_events.EventHandle);
